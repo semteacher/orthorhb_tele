@@ -19,12 +19,9 @@ class Sensor{
 function readall(){
  
     // select all query
-    $query = "SELECT 
-                *
-            FROM
-                " . $this->table_name . " s
-            ORDER BY
-                s.id DESC";
+    $query = "SELECT * 
+              FROM " . $this->table_name . " s
+              ORDER BY s.id DESC";
  
     // prepare query statement
     $stmt = $this->conn->prepare($query);

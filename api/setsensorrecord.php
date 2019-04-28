@@ -21,13 +21,13 @@ $data = json_decode(file_get_contents("php://input"));
 // make sure data is not empty
 if(
     !empty($data->sensorid) &&
-    !empty($data->assignid) &&
+    !empty($data->formid) &&
     !empty($data->datavalue)
 ){
  
     // set product property values
     $sensorrec->sensorid = $data->sensorid;
-    $sensorrec->assignid = $data->assignid;
+    $sensorrec->formid = $data->formid;
     $sensorrec->datavalue = $data->datavalue;
     if (!empty($data->timerec)) {
         //$sensorrec->timerec = $data->timerec;

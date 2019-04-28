@@ -39,7 +39,7 @@ if($num>0){
         $sensor_record_item=array(
             "id" => $id,
             "sensorid" => $sensorid,
-            "assignid" => $assignid,
+            "formid" => $formid,
             "timerec" => $timerec,
             "datavalue" => $datavalue
         );
