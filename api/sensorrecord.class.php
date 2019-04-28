@@ -34,7 +34,7 @@ class SensorRecord{
 function createRecord(){
     // query to insert record
     $query = "INSERT INTO " . $this->table_name . "
-            SET sensorid=:sensorid, formid=:formid, timerec=:timerec, datavalue=:datavalue";
+              SET sensorid=:sensorid, formid=:formid, timerec=:timerec, datavalue=:datavalue";
  
     // prepare query
     $stmt = $this->conn->prepare($query);
@@ -44,13 +44,13 @@ function createRecord(){
     $this->formid=htmlspecialchars(strip_tags($this->formid));
     $this->timerec=htmlspecialchars(strip_tags($this->timerec));
     //$this->datavalue=htmlspecialchars(strip_tags($this->datavalue));
- 
+
     // bind values
     $stmt->bindParam(":sensorid", $this->sensorid);
     $stmt->bindParam(":formid", $this->formid);
     $stmt->bindParam(":timerec", $this->timerec);
     $stmt->bindParam(":datavalue", $this->datavalue);
- 
+
     // execute query
     if($stmt->execute()){
         return true;

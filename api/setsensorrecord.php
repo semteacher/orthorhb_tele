@@ -36,33 +36,23 @@ if(
         $sensorrec->timerec = date('Y-m-d H:i:s');
     }
  
-    // create the product
+    // create the SensorRecord
     if($sensorrec->createRecord()){
- 
         // set response code - 201 created
         http_response_code(201);
- 
         // tell the user
         echo json_encode(array("message" => "SensorRecord was created."));
-    }
- 
-    // if unable to create the product, tell the user
-    else{
- 
+    } else {
+        // if unable to create the SensorRecord, tell the user
         // set response code - 503 service unavailable
         http_response_code(503);
- 
         // tell the user
         echo json_encode(array("message" => "Unable to create SensorRecord."));
     }
-}
- 
-// tell the user data is incomplete
-else{
- 
+} else {
+    // tell the user data is incomplete
     // set response code - 400 bad request
     http_response_code(400);
- 
     // tell the user
     echo json_encode(array("message" => "Unable to create SensorRecord. Data is incomplete."));
 }
