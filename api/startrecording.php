@@ -2,7 +2,7 @@
 // required headers
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: PUT");
+header("Access-Control-Allow-Methods: PUT, PATCH");
 header("Access-Control-Max-Age: 3600");
 //header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
@@ -11,47 +11,82 @@ include_once 'database.php';
 include_once 'rehabilitationform.class.php';
 include_once 'sensorrecord.class.php';
 
-//echo json_encode($__REQUEST); 
+//echo json_encode($_SERVER['REQUEST_METHOD']); 
 $database = new Database();
 $db = $database->getConnection();
 
-// get PUT data
+// get REQUEST data
 $data = json_decode(file_get_contents("php://input"));
 //echo json_encode($data);
-$rehabilitationform = new RehabilitationForm($db);
-// make sure data is not empty
-if(!empty($data->sensorid)){
-    $patientform = $rehabilitationform->getFormAssignedToSensor(intval($data->sensorid));
-    // create the product
-    if($patientform['id']){
-        $sensorrec = new SensorRecord($db);
-        // set sensorrecord defaults
-        $sensorrec->sensorid = intval($data->sensorid);
-        $sensorrec->formid = $patientform['id'];
-        $sensorrec->timerec = time();
-        $sensorrec->datavalue = null;
-        if($res=$sensorrec->createRecord()){
-            // set response code - 201 created
-            http_response_code(201);
-            // tell the user
-            echo json_encode(array("message" => "Record session was started!", "res"=>$res));
+
+if ($_SERVER['REQUEST_METHOD']=='PUT'){
+    //get last available patient form
+    $rehabilitationform = new RehabilitationForm($db);
+    // make sure data is not empty
+    if(!empty($data->sensorid)){
+        $patientform = $rehabilitationform->getFormAssignedToSensor(intval($data->sensorid));
+        // create a new sensor record
+        if($patientform['id']){
+            $sensorrec = new SensorRecord($db);
+            // set sensorrecord defaults
+            $sensorrec->sensorid = intval($data->sensorid);
+            $sensorrec->formid = $patientform['id'];
+            $sensorrec->timerec = time();
+            $sensorrec->datavalue = null;
+            if($newRecId=$sensorrec->createRecord()){
+                // set response code - 201 created
+                http_response_code(201);
+                // tell the user
+                //echo json_encode(array("message" => "Record session was started!", "res"=>$res));
+                echo json_encode(array("formID" => $patientform['id'], "recordID" => $newRecId));
+            } else {
+                http_response_code(503);
+                // tell the user
+                echo json_encode(array("message" => "Unable to create SensorRecord."));
+            }
         } else {
+            // if unable to create the sensorrecord, tell the user
+            // set response code - 503 service unavailable
             http_response_code(503);
             // tell the user
-            echo json_encode(array("message" => "Unable to create SensorRecord."));          
+            echo json_encode(array("message" => "Unable to retreive RehabilitationForm ID."));
         }
     } else {
-        // if unable to create the sensorrecord, tell the user
-        // set response code - 503 service unavailable
-        http_response_code(503);
+        // set response code - 400 bad request
+        http_response_code(400);
         // tell the user
-        echo json_encode(array("message" => "Unable to retreive RehabilitationForm ID."));
+        echo json_encode(array("message" => "Unable to create SensorRecord. Data is incomplete."));
+    }
+} elseif ($_SERVER['REQUEST_METHOD']=='PATCH') {
+    if ($data->recordid && $data->formid) {
+        //update the sensor record
+        $sensorrec = new SensorRecord($db);
+        // set sensorrecord defaults
+        //$sensorrec->id = intval($data->recordid);
+        $sensorrec->sensorid = intval($data->sensorid);
+        $sensorrec->formid = intval($data->formid);
+        $sensorrec->timerec = strtotime($data->timerec);
+        $sensorrec->datavalue = $data->datavalue;
+        if($res=$sensorrec->updateRecord(intval($data->recordid))){
+            http_response_code(201);
+            echo var_dump($res);
+            //echo json_encode($res);
+        } else {
+            // set response code - 400 bad request
+            http_response_code(400);
+            // tell the user
+            echo json_encode(array("message" => "Unable to update SensorRecord. Data is incomplete.", "res="=>$res));
+        }
+    } else {
+        // set response code - 400 bad request
+        http_response_code(400);
+        // tell the user
+        echo json_encode(array("message" => "Unable to update SensorRecord. Formid or recordid are missing."));
     }
 } else {
-    // tell the user data is incomplete
-    // set response code - 400 bad request
-    http_response_code(400);
-    // tell the user
-    echo json_encode(array("message" => "Unable to create SensorRecord. Data is incomplete."));
+        // set response code - 400 bad request
+        http_response_code(400);
+        // tell the user
+        echo json_encode(array("message" => "Unsupported request type"));
 }
 ?>

@@ -13,7 +13,6 @@ define("FORM_FOLDER", "orthorhb_tele");
 
 //define database table names
 define("SENSORS_DBTABLE", "form_orthorhb_sensors");
-define("SENSORSASSIGNMENT_DBTABLE", "form_orthorhb_sensor_assignment");
 define("SENSORSDATA_DBTABLE", "form_orthorhb_sensor_data");
 
 define("PATIENTEXAM_DBTABLE", "form_orthorhb_patient_exam");
