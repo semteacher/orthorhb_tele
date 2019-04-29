@@ -44,32 +44,32 @@ class SensorRecord{
     }
 
     // create sensor record
-function createRecord(){
-    // query to insert record
-    $query = "INSERT INTO " . $this->table_name . "
-              SET sensorid=:sensorid, formid=:formid, timerec=:timerec, datavalue=:datavalue;";
- 
-    // prepare query
-    $stmt = $this->conn->prepare($query);
- 
-    // sanitize
-    $this->sensorid=htmlspecialchars(strip_tags($this->sensorid));
-    $this->formid=htmlspecialchars(strip_tags($this->formid));
-    $this->timerec=htmlspecialchars(strip_tags($this->timerec));
-    //$this->datavalue=htmlspecialchars(strip_tags($this->datavalue));
+    function createRecord(){
+        // query to insert record
+        $query = "INSERT INTO " . $this->table_name . "
+                  SET sensorid=:sensorid, formid=:formid, timerec=:timerec, datavalue=:datavalue;";
+     
+        // prepare query
+        $stmt = $this->conn->prepare($query);
+     
+        // sanitize
+        $this->sensorid=htmlspecialchars(strip_tags($this->sensorid));
+        $this->formid=htmlspecialchars(strip_tags($this->formid));
+        $this->timerec=htmlspecialchars(strip_tags($this->timerec));
+        //$this->datavalue=htmlspecialchars(strip_tags($this->datavalue));
 
-    // bind values
-    $stmt->bindParam(":sensorid", $this->sensorid);
-    $stmt->bindParam(":formid", $this->formid);
-    $stmt->bindParam(":timerec", $this->timerec);
-    $stmt->bindParam(":datavalue", $this->datavalue);
+        // bind values
+        $stmt->bindParam(":sensorid", $this->sensorid);
+        $stmt->bindParam(":formid", $this->formid);
+        $stmt->bindParam(":timerec", $this->timerec);
+        $stmt->bindParam(":datavalue", $this->datavalue);
 
-    // execute query
-    if($stmt->execute()){
-        return $this->conn->lastInsertId();
+        // execute query
+        if($stmt->execute()){
+            return $this->conn->lastInsertId();
+        }
+        return false;
     }
-    return false;
-}
 // create sensor record
 function updateRecord($id){
     //update datavalue
@@ -82,9 +82,17 @@ function updateRecord($id){
  
     //construct updated datarecord
     $olddatavalue = $this->getRecordValue($id);
+    //return $olddatavalue["datavalue"];
     //return json_decode($olddatavalue["datavalue"]);
-    $newvalue = $olddatavalue["datavalue"].',{"timestmp":"'.$this->timerec.'","data":'.$this->datavalue.'}';
-//return $newvalue;    
+    if ($olddatavalue["datavalue"]) {
+        //add value to th end of JSON array - as string
+        $tmparr = explode(']', $olddatavalue["datavalue"]);
+        $newvalue = $tmparr[0].',{"timestmp":"'.$this->timerec.'","data":'.$this->datavalue.'}]';
+    } else {
+        //create new JSON array - as string
+        $newvalue = '[{"timestmp":"'.$this->timerec.'","data":'.$this->datavalue.'}]';
+    }
+    //return $newvalue;    
     $this->datavalue = $newvalue;
     // bind values
     $stmt->bindParam(":sensorid", $this->sensorid);
