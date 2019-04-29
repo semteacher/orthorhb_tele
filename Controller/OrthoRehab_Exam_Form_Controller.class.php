@@ -1,6 +1,7 @@
 <?php
 require_once($GLOBALS['srcdir'] . "/forms.inc");
 require_once(MODEL_DIR."sensorModel.class.php");
+require_once(MODEL_DIR."sensorRecordModel.class.php");
 
 //require_once(VIEW_DIR."SymptByPatient_Form2Print.class.php");
 
@@ -84,7 +85,10 @@ class OrthoRehab_Exam_Form_Controller {
         //get all sensors
         //TODO: get only available sensors
         $Sensors = SensorModel::get_all_sensors();
-        //var_dump($Diseases);
+        //TODO: get sensor record belong to this form
+        //$SensorRecords = SensorRecordModel::get_sensordata_formid(20);
+        $SensorRecord = SensorRecordModel::get_sensordata_id(20);
+        $SensorRecordValue = SensorRecordModel::get_sensordata_value_id(20);
         //display form
         require_once(VIEW_DIR.'OrthoRehab_Patient_Monitoring_Form.html');
         //$report_form = new SymptByPatient_Form($this, $SymptCategory);
