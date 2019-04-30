@@ -91,9 +91,19 @@
 //{
 echo var_dump($SensorRecord);
 echo('<br>');
+echo 'record[20]=';
 echo var_dump($SensorRecordValue);
 echo('<br>');
+echo 'record[20](decode)=';
 echo var_dump(json_decode($SensorRecordValue));
+echo('<br>');
+echo('<hr>');
+echo('<br>');
+echo 'record[5]=';
+echo var_dump($SensorRecordValue5);
+echo('<br>');
+echo 'record[5](decode)=';
+echo var_dump(json_decode($SensorRecordValue5));
 //}
     echo '</div>';
 ?>
