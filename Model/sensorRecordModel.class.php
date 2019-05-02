@@ -47,6 +47,21 @@ require_once($GLOBALS['srcdir'].'/sql.inc');
         return $rec;
     }
 
+    public static function get_sensordata_formid($formid) {
+        $list = array();
+        $db = get_db();
+        $req = $db->Execute('SELECT sd.id, sd.sensorid, s.sensorname, sd.formid, sd.timerec  
+                             FROM ' . SENSORSDATA_DBTABLE . ' sd 
+                             LEFT JOIN ' . SENSORS_DBTABLE . ' s ON s.id=sd.sensorid
+                             WHERE sd.formid= ' . $formid . ';');
+        // we create a list of SensorRecordModel objects from the database results
+        foreach($req as $sensordata) {
+            $list[] = new SensorRecordModel($sensordata['id'], $sensordata['sensorid'], $sensordata['formid'], $sensordata['timerec'], $sensordata['sensorname']);
+        }
+        return $list;
+        //return $req;
+    }
+
     public static function get_sensordata_value_id($id) {
         //$list = array();
         $db = get_db();

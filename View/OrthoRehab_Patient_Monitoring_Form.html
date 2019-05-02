@@ -86,25 +86,31 @@
     echo '<div id="previoussessions">';
     echo '<h3>Попередні сесії (спостереження):</h3>';
 
-//$SensorDataSessions = array();
-//foreach ($SensorDataSessions as $key=>$SensorDataSession)
-//{
-echo var_dump($SensorRecord);
-echo('<br>');
-echo 'record[20]=';
-echo var_dump($SensorRecordValue);
-echo('<br>');
-echo 'record[20](decode)=';
-echo var_dump(json_decode($SensorRecordValue));
+//echo var_dump($SensorRecord);
+//echo('<br>');
+//echo 'record[20]=';
+//echo var_dump($SensorRecordValue);
+//echo('<br>');
+//echo 'record[20](decode)=';
+//echo var_dump(json_decode($SensorRecordValue));
+//echo('<br>');
+//echo('<hr>');
+echo('<hr>');
+foreach ($SensorRecordValues as $key=>$sensorRecordData) {
+echo ' N=';
+echo $key;
+echo ' date=';
+echo date(DATEFORMAT, $sensorRecordData->timerec);
+echo ' sensor=';
+echo $sensorRecordData->datavalue;
+$sensorRecordDataValue = SensorRecordModel::get_sensordata_value_id($sensorRecordData->id);
+echo ' data=';
+echo $sensorRecordDataValue;
 echo('<br>');
 echo('<hr>');
-echo('<br>');
-echo 'record[5]=';
-echo var_dump($SensorRecordValue5);
-echo('<br>');
-echo 'record[5](decode)=';
-echo var_dump(json_decode($SensorRecordValue5));
-//}
+//echo 'record[5](decode)=';
+//echo var_dump(json_decode($SensorRecordValue5));
+}
     echo '</div>';
 ?>
 

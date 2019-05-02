@@ -91,6 +91,7 @@ class OrthoRehab_Exam_Form_Controller {
         $SensorRecordValue5 = SensorRecordModel::get_sensordata_value_id(5);
         $SensorRecord = SensorRecordModel::get_sensordata_id(20);
         $SensorRecordValue = SensorRecordModel::get_sensordata_value_id(20);
+        $SensorRecordValues = SensorRecordModel::get_sensordata_formid($this->form_idexam);
         //display form
         require_once(VIEW_DIR.'OrthoRehab_Patient_Monitoring_Form.html');
         //$report_form = new SymptByPatient_Form($this, $SymptCategory);
