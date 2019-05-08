@@ -28,12 +28,11 @@ require_once($GLOBALS['srcdir'].'/sql.inc');
         $db = get_db();
         $req = $db->Execute('SELECT * FROM ' . SENSORS_DBTABLE . ' s ORDER BY s.id DESC');
         // we create a list of SensorModel objects from the database results
-        foreach($req as $disease) {
-            $list[] = new SensorModel($disease['id'], $disease['sensorname'], $disease['sensordesc'], $disease['sensortoken']);
+        foreach($req as $sensor) {
+            $list[] = new SensorModel($sensor['id'], $sensor['sensorname'], $sensor['sensordesc'], $sensor['sensortoken']);
         }
         return $list;
     }
-
 
   }
 ?>

@@ -31,8 +31,8 @@ class OrthoRehab_Exam_Form_Controller {
         $this->form_userauthorized = $_SESSION['userauthorized'];
         $this->returnurl =$GLOBALS['form_exit_url'];
         $this->sensorid = 0;
-        $this->sensorassigndate = date("Y-m-d H:i:s", time());
-        $this->sensorreleasedate = date("Y-m-d H:i:s", (time()+86400)); //should be +1 day at list
+        $this->sensorassigndate = date(DATEFORMAT, time());
+        $this->sensorreleasedate = date(DATEFORMAT, (time()+86400)); //should be +1 day at list
         $this->notes = NULL;
     }
     
@@ -75,6 +75,7 @@ class OrthoRehab_Exam_Form_Controller {
             $this->sensorid = $form_data[sensorid];
             $this->sensorassigndate = date(DATEFORMAT, $form_data[sensorassigndate]);
             $this->sensorreleasedate = date(DATEFORMAT,  $form_data[sensorreleasedate]);
+            $this->createdate = $form_data[createdate];
             $this->notes = $form_data[notes];
     	}
     	else {
@@ -91,6 +92,7 @@ class OrthoRehab_Exam_Form_Controller {
         $SensorRecordValue5 = SensorRecordModel::get_sensordata_value_id(5);
         $SensorRecord = SensorRecordModel::get_sensordata_id(20);
         $SensorRecordValue = SensorRecordModel::get_sensordata_value_id(20);
+        //get sensor record belong to this form
         $SensorRecordValues = SensorRecordModel::get_sensordata_formid($this->form_idexam);
         //display form
         require_once(VIEW_DIR.'OrthoRehab_Patient_Monitoring_Form.html');
