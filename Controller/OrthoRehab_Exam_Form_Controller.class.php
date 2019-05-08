@@ -3,7 +3,7 @@ require_once($GLOBALS['srcdir'] . "/forms.inc");
 require_once(MODEL_DIR."sensorModel.class.php");
 require_once(MODEL_DIR."sensorRecordModel.class.php");
 
-//require_once(VIEW_DIR."SymptByPatient_Form2Print.class.php");
+require_once(VIEW_DIR."ReportByPatient.class.php");
 
 //main controller class
 class OrthoRehab_Exam_Form_Controller {
@@ -96,7 +96,7 @@ class OrthoRehab_Exam_Form_Controller {
         $SensorRecordValues = SensorRecordModel::get_sensordata_formid($this->form_idexam);
         //display form
         require_once(VIEW_DIR.'OrthoRehab_Patient_Monitoring_Form.html');
-        //$report_form = new SymptByPatient_Form($this, $SymptCategory);
+
         return;
 
 	}
@@ -107,12 +107,16 @@ class OrthoRehab_Exam_Form_Controller {
         //fetch form data
         $form_data = formFetch($this->table_name, $form_idexam);
         if ($form_data) {
-            $this->id_finaldisease = $form_data[id_finaldisease];
-            $this->finaldisease = $form_data[finaldisease];
-            //set diseases names
-            $currDiseasesMulti = $this->getCurrDiseasesMultiTable_action($form_data);            
+            $this->form_idexam = $form_idexam;
+            $this->sensorid = $form_data[sensorid];
+            $this->sensorassigndate = date(DATEFORMAT, $form_data[sensorassigndate]);
+            $this->sensorreleasedate = date(DATEFORMAT,  $form_data[sensorreleasedate]);
+            $this->createdate = $form_data[createdate];
+            $this->notes = $form_data[notes];
+            //get sensor record belong to this form
+            $SensorRecordValues = SensorRecordModel::get_sensordata_formid($this->form_idexam);
             //display form
-            $report_form = new SymptByPatient_Form2Report($form_data, $currDiseasesMulti, $this->form_folder, $this->gaeScriptName);
+            $report_form = new ReportByPatient($form_data, $SensorRecordValues);
         }
         return;
     }
@@ -120,7 +124,6 @@ class OrthoRehab_Exam_Form_Controller {
     public function save_action_process() {
         $this->form_idexam = $_POST['id'];
         if ($_POST['pid']) {$this->form_pid = $_POST['pid'];}else{$this->form_pid = $_SESSION['pid'];}
-
 
         if ($_POST['sensorid']) {$this->sensorid = intval($_POST['sensorid']);}else{$this->sensorid = 0;}
 
