@@ -58,11 +58,11 @@
 
 <?php
     echo '<div id="activesessions">';
-    echo '<h3>Поточна сесія (спостереження):</h3>';
+    echo '<h3>Active observation:</h3>';
     //sensor selector
     if ($this->sensorid == 0) { $first_row_sel = 'selected'; } else { $first_row_sel = ''; }
     $sensor_selector = '<select id="sensorid" name="sensorid">';
-    $sensor_selector .= '<option value="0" '.$first_row_sel.'>---Виберіть сенсор:---</option>';
+    $sensor_selector .= '<option value="0" '.$first_row_sel.'>---Select sensor:---</option>';
     //var_dump($sensor_selector);
 
     foreach ($Sensors as $key=>$Sensor)
@@ -72,45 +72,39 @@
     }
     $sensor_selector .= '</select>';
 
-    echo '<div class="bold warningtext diseases">Моніторинг: сенсор № ';
+    echo '<div class="bold warningtext diseases">Monitored by sensor N: ';
     echo $sensor_selector;
     echo '</div>';
-    echo '<div class="bold warningtext diseases">почато: ';
+    echo '<div class="bold warningtext diseases">started: ';
     echo '<input type="text" size="14" class="datetimepicker" id="sensorassigndate" name="sensorassigndate" value="'. $this->sensorassigndate .'"/>';
     echo '</div>';
-    echo '<div class="bold warningtext diseases">закінчено: ';
+    echo '<div class="bold warningtext diseases">finished: ';
     echo '<input type="text" size="14" class="datetimepicker" id="sensorreleasedate" name="sensorreleasedate" value="'. $this->sensorreleasedate .'"/>';
     echo '</div>';
     echo '</div>';
     echo '<hr>';
     echo '<div id="previoussessions">';
-    echo '<h3>Попередні сесії (спостереження):</h3>';
+    echo '<h3>Previous observations:</h3>';
 
-//echo var_dump($SensorRecord);
-//echo('<br>');
-//echo 'record[20]=';
-//echo var_dump($SensorRecordValue);
-//echo('<br>');
-//echo 'record[20](decode)=';
-//echo var_dump(json_decode($SensorRecordValue));
-//echo('<br>');
-//echo('<hr>');
-echo('<hr>');
-foreach ($SensorRecordValues as $key=>$sensorRecordData) {
-echo ' N=';
-echo $key;
-echo ' date=';
-echo date(DATEFORMAT, $sensorRecordData->timerec);
-echo ' sensor=';
-echo $sensorRecordData->datavalue;
-$sensorRecordDataValue = SensorRecordModel::get_sensordata_value_id($sensorRecordData->id);
-echo ' data=';
-echo $sensorRecordDataValue;
-echo('<br>');
-echo('<hr>');
+    echo('<hr>');
+    echo '<div class="display-flex">';
+    echo '<div id="tablepanel">';
+    echo '<table class="">';
+    echo '<tr><th style="width:180px">Date</th><th style="width:90px">Sensor</th><th>View</th></tr>';
+    foreach ($SensorRecordValues as $key=>$sensorRecordData) {
+        //get sensor data
+        $sensorRecordDataValue = SensorRecordModel::get_sensordata_value_id($sensorRecordData->id);
+        echo '<tr><td class="bold">'.date(DATEFORMAT, $sensorRecordData->timerec).'</td><td class="text centertext">'.$sensorRecordData->datavalue.'</td><td class="text centertext"><a class="showchat" href="'.$formpath.'/showcart.php?formid=&'.$this->form_idexam.'recid='.$sensorRecordData->id.'">Chart</a>'.$sensorRecordDataValue.'</td></tr>';
+    }
+    echo '</table>';
+    echo '</div>';
+    echo '</div>';
+    echo '<div id="chartpanel">';
+    echo '</div>';
+    echo('<hr>');
 //echo 'record[5](decode)=';
 //echo var_dump(json_decode($SensorRecordValue5));
-}
+
     echo '</div>';
 ?>
 
@@ -142,6 +136,23 @@ echo('<hr>');
             document.orthoRehabForm.submit();
         }
     });
+
+
+$(".showchat").click(function(event) { 
+    event.preventDefault();
+    $.ajax({
+        type: "GET",
+        url: $(this).attr('href'),
+        success: function(response) {
+            alert(response);
+        },
+        error: function(response) {
+            alert(response);
+        }
+    });
+    return false;
+});
+
     $(".saveajax").click(function() {
     var $form = $('#orthoRehabForm'),
         data = $form.serialize(),

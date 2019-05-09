@@ -86,12 +86,6 @@ class OrthoRehab_Exam_Form_Controller {
         //get all sensors
         //TODO: get only available sensors
         $Sensors = SensorModel::get_all_sensors();
-        //TODO: get sensor record belong to this form
-        //$SensorRecords = SensorRecordModel::get_sensordata_formid(20);
-        $SensorRecord5 = SensorRecordModel::get_sensordata_id(5);
-        $SensorRecordValue5 = SensorRecordModel::get_sensordata_value_id(5);
-        $SensorRecord = SensorRecordModel::get_sensordata_id(20);
-        $SensorRecordValue = SensorRecordModel::get_sensordata_value_id(20);
         //get sensor record belong to this form
         $SensorRecordValues = SensorRecordModel::get_sensordata_formid($this->form_idexam);
         //display form
