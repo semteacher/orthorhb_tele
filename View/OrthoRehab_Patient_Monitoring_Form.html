@@ -93,8 +93,8 @@
     echo '<tr><th style="width:180px">Date</th><th style="width:90px">Sensor</th><th>View</th></tr>';
     foreach ($SensorRecordValues as $key=>$sensorRecordData) {
         //get sensor data
-        $sensorRecordDataValue = SensorRecordModel::get_sensordata_value_id($sensorRecordData->id);
-        echo '<tr><td class="bold">'.date(DATEFORMAT, $sensorRecordData->timerec).'</td><td class="text centertext">'.$sensorRecordData->datavalue.'</td><td class="text centertext"><a class="showchat" href="'.$formpath.'/showcart.php?formid=&'.$this->form_idexam.'recid='.$sensorRecordData->id.'">Chart</a>'.$sensorRecordDataValue.'</td></tr>';
+        //$sensorRecordDataValue = SensorRecordModel::get_sensordata_value_id($sensorRecordData->id);
+        echo '<tr><td class="bold">'.date(DATEFORMAT, $sensorRecordData->timerec).'</td><td class="text centertext">'.$sensorRecordData->datavalue.'</td><td class="text centertext"><a class="showchat" href="'.$formpath.'/showchart.php?formid='.$this->form_idexam.'&recid='.$sensorRecordData->id.'">Chart</a></td></tr>';
     }
     echo '</table>';
     echo '</div>';
@@ -144,9 +144,12 @@ $(".showchat").click(function(event) {
         type: "GET",
         url: $(this).attr('href'),
         success: function(response) {
-            alert(response);
+        console.log(response);
+            //alert(response);
+            $("#chartpanel").html(response);
         },
         error: function(response) {
+        console.log(response);
             alert(response);
         }
     });

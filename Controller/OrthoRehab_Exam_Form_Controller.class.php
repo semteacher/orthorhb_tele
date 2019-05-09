@@ -95,6 +95,16 @@ class OrthoRehab_Exam_Form_Controller {
 
 	}
 
+    public function showchart_action($form_idexam, $recid) {
+        $recid = intval($recid);
+        if ($recid) {
+            $sensorRecordDataValue = SensorRecordModel::get_sensordata_value_id($recid);
+            echo var_dump(json_decode($sensorRecordDataValue));
+        } else {
+            echo 'invalid RecID';
+        }
+    }
+
     public function report_action($form_idexam) {
         //show form report on the encounter page
         $form_idexam = intval($form_idexam);
