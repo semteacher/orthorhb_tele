@@ -98,8 +98,24 @@ class OrthoRehab_Exam_Form_Controller {
     public function showchart_action($form_idexam, $recid) {
         $recid = intval($recid);
         if ($recid) {
-            $sensorRecordDataValue = SensorRecordModel::get_sensordata_value_id($recid);
-            echo var_dump(json_decode($sensorRecordDataValue));
+            $sensorRecordDataValueStr = SensorRecordModel::get_sensordata_value_id($recid);
+            $sensorRecordDataValues = json_decode($sensorRecordDataValueStr, TRUE);
+            $datacol = array_column($sensorRecordDataValues, 'data');
+            //$datacol = call_user_func_array('array_merge', $datacol);
+            //$anglecol = array_column($datacol, 'angle');
+            //echo var_dump(json_decode($sensorRecordDataValueStr));
+            //echo var_dump($sensorRecordDataValues);
+            //echo var_dump($anglecol);
+            $angledata = array();
+            foreach ($sensorRecordDataValues as $key=>$sensorDataValues) {
+                //$angledata[] = array('x'=>floatval($sensorDataValues['timestmp']), 'y'=>floatval($sensorDataValues['data']['angle']));
+                //$angledata[] = array('x'=>$key, 'y'=>floatval($sensorDataValues['data']['angle']));
+                $angledata[] = array('label'=>$sensorDataValues['timestmp'], 'y'=>floatval($sensorDataValues['data']['angle'])); //OK1!
+                //$angledata[] = array('x'=>date(DATEFORMAT,$sensorDataValues['timestmp']), 'y'=>floatval($sensorDataValues['data']['angle'])); 
+            }
+            $angledatajson = json_encode($angledata, JSON_NUMERIC_CHECK);
+            echo $angledatajson;
+            //echo var_dump(json_decode($angledatajson));
         } else {
             echo 'invalid RecID';
         }

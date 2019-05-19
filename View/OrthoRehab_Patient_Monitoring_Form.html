@@ -10,10 +10,13 @@
             $formpath = 'http://'.$_SERVER['SERVER_NAME'].$GLOBALS["web_root"].'/interface/forms/'.$this->form_folder;
             $globalpath = 'http://'.$_SERVER['SERVER_NAME'].$GLOBALS["web_root"];
         }
+        //var_dump($GLOBALS['assets_static_relative']);
     ?>
     <!-- supporting javascript code -->
     <script type='text/javascript' src="<?php echo $GLOBALS['assets_static_relative']; ?>/jquery-min-1-7-2/index.js"></script>
     <script type='text/javascript' src="<?php echo $GLOBALS['assets_static_relative']; ?>/jquery-datetimepicker-2-5-4/build/jquery.datetimepicker.full.min.js"></script>
+
+    <script type='text/javascript' src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
 
     <!-- page styles -->
     <link rel="stylesheet" href="<?php echo $GLOBALS['assets_static_relative']; ?>/jquery-datetimepicker-2-5-4/build/jquery.datetimepicker.min.css">
@@ -98,14 +101,25 @@
     }
     echo '</table>';
     echo '</div>';
-    echo '</div>';
-    echo '<div id="chartpanel">';
+    echo '<div id="datapanel"></div>';
+    echo '<div id="chartpanel"></div>';
     echo '</div>';
     echo('<hr>');
 //echo 'record[5](decode)=';
 //echo var_dump(json_decode($SensorRecordValue5));
 
     echo '</div>';
+
+    $dataPoints = array(
+	array("y" => 25, "z" => 35, "label" => "Sunday"),
+	array("y" => 15, "z" => 36, "label" => "Monday"),
+	array("y" => 25, "z" => 37, "label" => "Tuesday"),
+	array("y" => 5, "z" => 38, "label" => "Wednesday"),
+	array("y" => 10, "z" => 39, "label" => "Thursday"),
+	array("y" => 0, "z" => 40, "label" => "Friday"),
+	array("y" => 20, "z" => 41, "label" => "Saturday")
+);
+ 
 ?>
 
 </div>
@@ -124,10 +138,12 @@
 <script type="text/javascript">
     // jQuery stuff to make the page a little easier to use
     $(document).ready(function(){
-        $('.datetimepicker').datetimepicker({
+
+    $('.datetimepicker').datetimepicker({
       format:'Y-m-d H:i:s',
       lang:'ua'
     });
+
     $(".save").click(function() {
         top.restoreSession(); 
         if ($("#sensorid :selected").val() == 0) {
@@ -137,16 +153,35 @@
         }
     });
 
-
 $(".showchat").click(function(event) { 
     event.preventDefault();
     $.ajax({
         type: "GET",
         url: $(this).attr('href'),
         success: function(response) {
-        console.log(response);
-            //alert(response);
-            $("#chartpanel").html(response);
+            console.log(response);
+            alert(response);
+            $("#datapanel").html(response);
+
+            var responseobj = JSON.parse(response);
+
+            var chart = new CanvasJS.Chart("chartpanel", {
+                title: {
+                    text: "rehabilitation Monitoring"
+                },
+                axisY: {
+                    title: "dep.var."
+                },
+            data: [{
+                    type: "line",
+                    name: "angle",
+                    xValueType: "number", 
+                    showInLegend: true,
+                    dataPoints: responseobj
+                }]
+            });
+            chart.render();
+            
         },
         error: function(response) {
         console.log(response);
